@@ -5,10 +5,14 @@ export const app = express();
 app.use(express.json()); // pour parser le JSON dans req.body
 app.use('/users', userRouter); // branche le router users
 
-// Démarrage en dev (yarn start)
-if (require.main === module) {
-    const PORT = 3001;
-    app.listen(PORT, () => {
-        console.log(`🚀 Server listening on http://localhost:${PORT}`);
+// Fonction exportée pour démarrer le serveur
+export const startServer = (port = 3000) => {
+    return app.listen(port, () => {
+      console.log(`🚀 Server running on port ${port}`);
     });
-}
+  };
+  
+  // Ne pas exécuter le serveur lors des tests
+  if (require.main === module) {
+    startServer();
+  }
