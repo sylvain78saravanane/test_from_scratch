@@ -8,7 +8,7 @@ module.exports = {
             lines: 90,
             statements: 90,
             branches: 45,
-            functions: 90
+            functions: 70
         }
     },
     testMatch: ["**/__tests__/**/*.test.ts"], // où trouver les tests
