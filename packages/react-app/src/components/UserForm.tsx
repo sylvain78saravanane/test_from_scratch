@@ -1,3 +1,4 @@
+// src/components/UserForm.tsx
 import { useState } from 'react';
 interface Props {
     onCreated: (name: string) => void;
@@ -8,7 +9,9 @@ export function UserForm({ onCreated }: Props) {
         <form
             onSubmit={e => {
                 e.preventDefault();
-                onCreated(name);
+                if (name.trim()) {  // Ajout de cette validation
+                    onCreated(name);
+                }
             }}
         >
             <label htmlFor="name">Nom :</label>

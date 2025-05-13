@@ -1,11 +1,19 @@
-import { server } from './mocks/browser';
+// src/setupTests.ts
 import '@testing-library/jest-dom';
+import { server } from './mocks/browser';
 
-// Avant tous les tests : démarrer MSW
-beforeAll(() => server.listen());
+// Important : démarrer le serveur avant tous les tests
+beforeAll(() => {
+  // La configuration onUnhandledRequest: 'error' est importante pour déboguer
+  server.listen({ onUnhandledRequest: 'error' });
+});
 
-// Après chaque test : reset handlers (réinitialise le state mocké)
-afterEach(() => server.resetHandlers());
+// Réinitialiser les handlers après chaque test
+afterEach(() => {
+  server.resetHandlers();
+});
 
-// Après tous les tests : fermer MSW
-afterAll(() => server.close());
+// Fermer le serveur après tous les tests
+afterAll(() => {
+  server.close();
+});

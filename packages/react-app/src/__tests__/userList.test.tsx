@@ -1,17 +1,17 @@
-import { render, screen } from '@testing-library/react';
+// src/__tests__/userList.test.tsx
+import { render, screen, waitFor } from '@testing-library/react';
 import { UserList } from '../components/UserList';
+import { rest } from 'msw';
 import { server } from '../mocks/browser';
-import { http, HttpResponse } from 'msw';
 
-// Préparer la suite de tests
 describe('UserList Component', () => {
     it('affiche le loader puis la liste des utilisateurs', async () => {
         render(<UserList />);
 
-        // Vérifie que le loader est visible pendant le chargement
+        // Vérifie que le loader est visible initialement
         expect(screen.getByRole('status')).toHaveTextContent('Chargement...');
 
-        // Attend que les utilisateurs soient affichés
+        // Attend que les éléments de liste apparaissent
         const items = await screen.findAllByRole('listitem');
         expect(items).toHaveLength(2);
         expect(items[0]).toHaveTextContent('Alice');
@@ -19,31 +19,34 @@ describe('UserList Component', () => {
     });
 
     it('affiche un message si la requête échoue', async () => {
-        // Remplacer le handler pour simuler une erreur 500
+        // Remplacer temporairement le handler
         server.use(
-            http.get('/users', () =>
-                HttpResponse.json({ error: 'Server Error' }, { status: 500 })
-            )
+            rest.get('/users', (req, res, ctx) => {
+                return res(
+                    ctx.status(500),
+                    ctx.json({ error: 'Server Error' })
+                );
+            })
         );
 
         render(<UserList />);
 
-        // Attend l'affichage de l'erreur
+        // Attend que le message d'erreur apparaisse
         const alert = await screen.findByRole('alert');
         expect(alert).toHaveTextContent('Erreur : Erreur réseau');
     });
 
-    it('affiche un message si aucun utilisateur n’est trouvé', async () => {
-        // Remplacer le handler pour renvoyer un tableau vide
+    it('affiche un message si aucun utilisateur n\'est trouvé', async () => {
+        // Remplacer temporairement le handler
         server.use(
-            http.get('/users', () =>
-                HttpResponse.json([], { status: 200 })
-            )
+            rest.get('/users', (req, res, ctx) => {
+                return res(ctx.status(200), ctx.json([]));
+            })
         );
 
         render(<UserList />);
 
-        // Vérifie le message alternatif (nécessite logique dans UserList)
+        // Attend que le message apparaisse
         const message = await screen.findByText(/aucun utilisateur trouvé/i);
         expect(message).toBeInTheDocument();
     });
