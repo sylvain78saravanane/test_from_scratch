@@ -2,7 +2,6 @@
 import '@testing-library/jest-dom';
 import { server } from './mocks/browser';
 
-// Important : démarrer le serveur avant tous les tests
 beforeAll(() => {
   // La configuration onUnhandledRequest: 'error' est importante pour déboguer
   server.listen({ onUnhandledRequest: 'error' });

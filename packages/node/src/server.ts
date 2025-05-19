@@ -6,7 +6,7 @@ app.use(express.json()); // pour parser le JSON dans req.body
 app.use('/users', userRouter); // branche le router users
 
 // Fonction exportée pour démarrer le serveur
-export const startServer = (port = 3000) => {
+export const startServer = (port = 3001) => {
     return app.listen(port, () => {
       console.log(`🚀 Server running on port ${port}`);
     });
